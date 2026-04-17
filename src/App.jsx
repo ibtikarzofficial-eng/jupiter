@@ -33,15 +33,18 @@ export default function App() {
       }} />
 
       {/* LAYER 2: THE FIXED UI (Section 1) */}
-      <div className="section-1" style={{
+      <div style={{
+        position: 'fixed', top: 0, left: 0, width: '50%', height: '100vh',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: '0 5% 0 10%', zIndex: 10, pointerEvents: 'none',
+        transition: 'opacity 0.2s',
         opacity: 1 - Math.min(scrollProgress * 2, 1),
-        transform: `translateY(${-(scrollProgress * 50)}px)`,
-        transition: 'opacity 0.2s'
+        transform: `translateY(${-(scrollProgress * 50)}px)`
       }}>
-        <h1>
+        <h1 style={{ color: '#e6e6e6ff', fontSize: '4.5rem', lineHeight: '1.05', margin: '0 0 20px 0', fontWeight: '700', letterSpacing: '-0.02em' }}>
           Your Gateway to<br />Global Opportunities
         </h1>
-        <p>
+        <p style={{ color: '#555555', fontSize: '1.25rem', maxWidth: '80%', fontWeight: '300', lineHeight: '1.5', letterSpacing: '0.01em' }}>
           Exclusive consultation for seamless international transitions. We handle the complexity so you can enjoy the flight.
         </p>
         <button className="apple-btn" style={{
@@ -54,13 +57,16 @@ export default function App() {
       </div>
 
       {/* LAYER 2.5: THE SECTION 2 UI */}
-      <div className="section-2" style={{
+      <div style={{
+        position: 'fixed', top: 0, right: 0, width: '40%', height: '100vh',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        alignItems: 'flex-start', padding: '0 5% 0 0', zIndex: 10,
         opacity: Math.max((scrollProgress - 0.5) * 2, 0),
         transform: `translateY(${(1 - Math.max((scrollProgress - 0.5) * 2, 0)) * 50}px)`,
         transition: 'opacity 0.2s, transform 0.2s',
         pointerEvents: scrollProgress > 0.6 ? 'auto' : 'none'
       }}>
-        <div className="section-2-header" style={{ textAlign: 'left', marginBottom: '30px' }}>
+        <div style={{ textAlign: 'left', marginBottom: '30px' }}>
           <h2 style={{ color: '#ffffff', fontSize: '3.2rem', fontWeight: '700', letterSpacing: '-0.02em', margin: 0 }}>
             Global Destinations
           </h2>
@@ -69,18 +75,22 @@ export default function App() {
           </p>
         </div>
 
-        <div className="section-2-list">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '380px' }}>
           {countriesData.map(country => {
             const isActive = selectedCountry === country.id || hoveredCountry === country.id;
             return (
-              <div key={country.id} className="section-2-card"
+              <div key={country.id}
                 onClick={() => setSelectedCountry(country.id)}
                 onMouseEnter={() => setHoveredCountry(country.id)}
                 onMouseLeave={() => setHoveredCountry(null)}
                 style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '16px 20px', cursor: 'pointer',
                   background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'rgba(10, 15, 25, 0.4)',
                   border: isActive ? '1px solid rgba(212, 175, 55, 0.5)' : '1px solid rgba(255, 255, 255, 0.05)',
-                  transform: isActive && window.innerWidth >= 768 ? 'translateX(-8px)' : 'translateX(0)',
+                  borderRadius: '16px', backdropFilter: 'blur(12px)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                  transform: isActive ? 'translateX(-8px)' : 'translateX(0)',
                   boxShadow: isActive ? '0 8px 24px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.1)'
                 }}
               >
