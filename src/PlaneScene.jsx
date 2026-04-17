@@ -51,14 +51,17 @@ export function CabinInterior() {
     const sealMatRef = useRef();
     const rimMatRef = useRef();
 
+    // Recreate the shape cleanly depending on screen width so the window is centered on mobile!
+    const winX = window.innerWidth < 768 ? 0 : 2.5;
+
     const wallShape = useMemo(() => {
         const shape = new THREE.Shape();
-        shape.moveTo(-15, -10); shape.lineTo(15, -10); shape.lineTo(15, 10); shape.lineTo(-15, 10); shape.lineTo(-15, -10);
+        shape.moveTo(-20, -10); shape.lineTo(20, -10); shape.lineTo(20, 10); shape.lineTo(-20, 10); shape.lineTo(-20, -10);
         const hole = new THREE.Path();
-        hole.absellipse(2.5, 0.1, 1.45, 2.0, 0, Math.PI * 2, false, 0);
+        hole.absellipse(winX, 0.1, 1.45, 2.0, 0, Math.PI * 2, false, 0);
         shape.holes.push(hole);
         return shape;
-    }, []);
+    }, [winX]);
 
     const wallSettings = useMemo(() => ({
         depth: 0.6, bevelEnabled: true, bevelSegments: 8, bevelSize: 0.04, bevelThickness: 0.04, curveSegments: 64,
@@ -86,13 +89,13 @@ export function CabinInterior() {
             </mesh>
 
             {/* Outer Window Seal (Dark Rubber) */}
-            <mesh position={[2.5, 0.1, 0.6]} scale={[1, 1.38, 1]}>
+            <mesh position={[winX, 0.1, 0.6]} scale={[1, 1.38, 1]}>
                 <torusGeometry args={[1.45, 0.12, 32, 64]} />
                 <meshPhysicalMaterial ref={sealMatRef} color="#050505" roughness={0.95} metalness={0.1} transparent={true} />
             </mesh>
 
             {/* Inner Window Rim (Brushed Gold Accent) */}
-            <mesh position={[2.5, 0.1, 0.65]} scale={[1, 1.38, 1]}>
+            <mesh position={[winX, 0.1, 0.65]} scale={[1, 1.38, 1]}>
                 <torusGeometry args={[1.35, 0.06, 32, 64]} />
                 <meshPhysicalMaterial ref={rimMatRef} color="#d4af37" roughness={0.3} metalness={0.8} transparent={true} />
             </mesh>

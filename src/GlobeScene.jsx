@@ -84,9 +84,11 @@ export default function GlobeScene() {
 
     const targetQuaternion = useRef(new THREE.Quaternion());
 
+    const isMobile = window.innerWidth < 768;
+
     // Entrance animation values
-    const scale = THREE.MathUtils.lerp(0.6, 1.0, scrollProgress);
-    const yOffset = THREE.MathUtils.lerp(-35, -15, scrollProgress); // Rises from deep off-screen into frame
+    const scale = THREE.MathUtils.lerp(0.6, isMobile ? 0.8 : 1.0, scrollProgress);
+    const yOffset = THREE.MathUtils.lerp(-35, isMobile ? -13 : -15, scrollProgress); // Rises higher on mobile
 
     useFrame((_, delta) => {
         if (globeObjRef.current) {
@@ -94,9 +96,10 @@ export default function GlobeScene() {
                 const country = countriesData.find(c => c.id === selectedCountry);
                 if (country) {
                     // 1. Y-Axis (Longitude): Subtract 90 degrees, then subtract the country's longitude.
-                    // The +0.25 rad offset compensates for the globe being on the left side of the screen,
-                    // making the pin stare directly into the camera lens.
-                    const targetY = THREE.MathUtils.degToRad(-90 - country.lon) + 0.25;
+                    // The +0.25 rad offset compensates for the globe being on the left side of the screen on desktop.
+                    // On mobile, the globe is centered, so the offset is 0.
+                    const mobileOffset = isMobile ? 0 : 0.25;
+                    const targetY = THREE.MathUtils.degToRad(-90 - country.lon) + mobileOffset;
 
                     // 2. X-Axis (Latitude): Tilt the globe by the country's latitude to bring it to the equator.
                     // Subtract 0.4 rad to perfectly cancel out the Earth's axial tilt from the parent group.
@@ -121,7 +124,7 @@ export default function GlobeScene() {
     });
 
     return (
-        <group position={[-2.2, yOffset, 0]} scale={scale}>
+        <group position={[isMobile ? 0 : -2.2, yOffset, 0]} scale={scale}>
             {/* Subtle glow behind the globe */}
             <mesh position={[0, 0, -3]}>
                 <planeGeometry args={[15, 15]} />
