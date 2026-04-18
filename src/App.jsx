@@ -105,10 +105,10 @@ export default function App() {
 
       {/* LAYER 3: THE FIXED 3D CANVAS */}
       <div style={{
-        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'auto', touchAction: 'none',
+        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'auto', touchAction: 'pan-y',
         backgroundColor: `rgba(11, 14, 20, ${Math.min(1, scrollProgress * 2.5)})`
       }}>
-        <Canvas camera={{ position: [0, 0, 6.5], fov: 55 }} dpr={[1, 1.5]}>
+        <Canvas camera={{ position: [0, 0, 6.5], fov: 55 }} dpr={[1, 1.5]} style={{ touchAction: 'pan-y' }}>
           <Suspense fallback={null}>
             <Environment preset="city" />
             <ScrollManager />
