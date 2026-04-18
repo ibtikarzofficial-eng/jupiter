@@ -109,9 +109,12 @@ function Clouds({ cloudTex }) {
 // ─────────────────────────────────────────────
 // MAIN SCENE
 // ─────────────────────────────────────────────
+useTexture.preload('/sky_gradient.webp');
+useTexture.preload('/cloud_alpha.webp');
+
 export default function PlaneScene() {
-    const skyTex = useTexture('/sky_gradient.png');
-    const cloudTex = useTexture('/cloud_alpha.png');
+    const skyTex = useTexture('/sky_gradient.webp');
+    const cloudTex = useTexture('/cloud_alpha.webp');
 
     // We use refs to manually update opacity without causing React to re-render the whole component
     const planeGroupRef = useRef();

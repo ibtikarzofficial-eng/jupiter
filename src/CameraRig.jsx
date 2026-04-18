@@ -8,6 +8,7 @@ export default function CameraRig() {
     const smoothed = useRef({ x: 0, y: 0 });
 
     useFrame((state) => {
+        const isMobile = state.size.width < 768;
         const multiplier = 1;
         smoothed.current.x += (state.pointer.x - smoothed.current.x) * 0.05;
         smoothed.current.y += (state.pointer.y - smoothed.current.y) * 0.05;
@@ -19,7 +20,7 @@ export default function CameraRig() {
         if (scrollProgress < 0.3) {
             const t = scrollProgress / 0.3;
             targetY = THREE.MathUtils.lerp(0, -0.5, t);
-            targetZ = THREE.MathUtils.lerp(6.5, 4.5, t); // Pushing IN from 6.5 to 4.5
+            targetZ = THREE.MathUtils.lerp(isMobile ? 8.5 : 6.5, isMobile ? 6.5 : 4.5, t); // Pushing IN from 6.5 to 4.5
             targetRotX = THREE.MathUtils.lerp(0, -0.05, t);
         }
         // STAGE 2: The Fall (0.3 to 0.6)
@@ -27,14 +28,14 @@ export default function CameraRig() {
         else if (scrollProgress < 0.6) {
             const t = (scrollProgress - 0.3) / 0.3;
             targetY = THREE.MathUtils.lerp(-0.5, -6, t);
-            targetZ = THREE.MathUtils.lerp(4.5, 8, t); // Pull back slightly in the void
+            targetZ = THREE.MathUtils.lerp(isMobile ? 6.5 : 4.5, isMobile ? 10 : 8, t); // Pull back slightly in the void
             targetRotX = THREE.MathUtils.lerp(-0.05, -0.15, t);
         }
         // STAGE 3: Land on the Globe (0.6 to 1.0)
         else {
             const t = (scrollProgress - 0.6) / 0.4;
-            targetY = THREE.MathUtils.lerp(-6, -14.2, t);
-            targetZ = THREE.MathUtils.lerp(8, 6.5, t); // Lock tight onto the globe
+            targetY = THREE.MathUtils.lerp(-6, isMobile ? -13.5 : -14.2, t);
+            targetZ = THREE.MathUtils.lerp(isMobile ? 10 : 8, isMobile ? 9.5 : 6.5, t); // Lock tight onto the globe
             targetRotX = THREE.MathUtils.lerp(-0.15, -0.2, t);
         }
 

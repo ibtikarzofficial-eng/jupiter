@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useTexture, PresentationControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useScrollStore, countriesData } from './store';
@@ -74,13 +74,19 @@ function CountryPin({ data, globeRadius }) {
     );
 }
 
+useTexture.preload('/earth_bump.webp');
+useTexture.preload('/earth_specular.webp');
+
 export default function GlobeScene() {
     const globeObjRef = useRef();
-    const bumpMap = useTexture('/earth_bump.jpg');
-    const specularMap = useTexture('/earth_specular.jpg');
+    const bumpMap = useTexture('/earth_bump.webp');
+    const specularMap = useTexture('/earth_specular.webp');
     const scrollProgress = useScrollStore(state => state.scrollProgress);
     const hoveredCountry = useScrollStore(state => state.hoveredCountry);
     const selectedCountry = useScrollStore(state => state.selectedCountry);
+
+    const { size } = useThree();
+    const isMobile = size.width < 768;
 
     const targetQuaternion = useRef(new THREE.Quaternion());
 
@@ -94,9 +100,9 @@ export default function GlobeScene() {
                 const country = countriesData.find(c => c.id === selectedCountry);
                 if (country) {
                     // 1. Y-Axis (Longitude): Subtract 90 degrees, then subtract the country's longitude.
-                    // The +0.25 rad offset compensates for the globe being on the left side of the screen,
-                    // making the pin stare directly into the camera lens.
-                    const targetY = THREE.MathUtils.degToRad(-90 - country.lon) + 0.25;
+                    // The offset compensates for the globe being on the left side of the screen on desktop,
+                    // making the pin stare directly into the camera lens. On mobile, it's centered.
+                    const targetY = THREE.MathUtils.degToRad(-90 - country.lon) + (isMobile ? 0 : 0.25);
 
                     // 2. X-Axis (Latitude): Tilt the globe by the country's latitude to bring it to the equator.
                     // Subtract 0.4 rad to perfectly cancel out the Earth's axial tilt from the parent group.
@@ -121,7 +127,7 @@ export default function GlobeScene() {
     });
 
     return (
-        <group position={[-2.2, yOffset, 0]} scale={scale}>
+        <group position={[isMobile ? 0 : -2.2, isMobile ? yOffset + 0.8 : yOffset, 0]} scale={isMobile ? scale * 0.85 : scale}>
             {/* Subtle glow behind the globe */}
             <mesh position={[0, 0, -3]}>
                 <planeGeometry args={[15, 15]} />
